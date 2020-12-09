@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/MathMatrix.dir/main.cpp.o CMakeFiles/MathMatrix.dir/Matrix.cpp.o  -o MathMatrix 

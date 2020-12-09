@@ -1,0 +1,3 @@
+/home/vadim/programs/c_lang/MathMatrix/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/vadim/programs/c_lang/MathMatrix/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/vadim/programs/c_lang/MathMatrix/cmake-build-debug/CMakeFiles/MathMatrix.dir

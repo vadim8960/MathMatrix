@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/vadim/programs/c_lang/MathMatrix/Matrix.cpp
+Matrix.h
+/home/vadim/programs/c_lang/MathMatrix/Matrix.h
+
+/home/vadim/programs/c_lang/MathMatrix/Matrix.h
+istream
+-
+cstdlib
+-
+cstring
+-
+initializer_list
+-
+
