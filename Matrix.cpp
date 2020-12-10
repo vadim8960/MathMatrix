@@ -1,5 +1,6 @@
 
 #include "Matrix.h"
+#include <iostream>
 
 unsigned Matrix::err_code = 0;
 double Matrix::eps = 0.;
@@ -8,7 +9,7 @@ bool Matrix::simple_copy = false;
 Matrix::Matrix() {
     this->n = 0;
     this->m = 0;
-    this->mat = NULL;
+    this->mat = _NULL;
 }
 
 Matrix::Matrix(unsigned n) {
@@ -17,27 +18,27 @@ Matrix::Matrix(unsigned n) {
     this->mat = (double *)malloc(n * n * sizeof(double));
 }
 
-Matrix::Matrix(unsigned int n, unsigned int m) {
+Matrix::Matrix(unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
     this->mat = (double *)malloc(n * m * sizeof(double));
 }
 
-Matrix::Matrix(double *mat, unsigned int n) {
+Matrix::Matrix(double *mat, unsigned n) {
     this->n = n;
     this->m = n;
     this->mat = (double *)malloc(n * n * sizeof(double));
     std::memcpy(this->mat, mat, n * n * sizeof(double));
 }
 
-Matrix::Matrix(double *mat, unsigned int n, unsigned int m) {
+Matrix::Matrix(double *mat, unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(n * m * sizeof(double));
+    this->mat = (double *)malloc(this->n * this->m * sizeof(double));
     std::memcpy(this->mat, mat, n * m * sizeof(double));
 }
 
-Matrix::Matrix(unsigned int n, double a) {
+Matrix::Matrix(unsigned n, double a) {
     this->n = n;
     this->m = n;
     this->mat = (double *)calloc(n * n, sizeof(double));
@@ -46,9 +47,13 @@ Matrix::Matrix(unsigned int n, double a) {
 }
 
 #if __cplusplus >= 201103L
-Matrix::Matrix(unsigned int n, unsigned int m, const std::initializer_list<double> &MIl) {
+Matrix::Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl) {
+    if (n * m != MIl.size()) {
+        Matrix::err_code = 14;
+        return;
+    }
     this->n = n;
-    this->m = n;
+    this->m = m;
     this->mat = (double *)malloc(n * m * sizeof(double));
     auto it = MIl.begin();
     for (double * i = this->mat; i <= this->mat + n * m; ++i, ++it)
@@ -62,6 +67,7 @@ Matrix::Matrix(const Matrix &A) {
     if (A.simple_copy) {
         this->mat = A.mat;
     } else {
+        this->mat = (double *)malloc(A.n * A.m * sizeof(double));
         std::memcpy(this->mat, A.mat, A.n * A.m * sizeof(double));
     }
 }
@@ -71,10 +77,10 @@ Matrix::~Matrix() {
     this->n = 0;
     if (simple_copy)
         return;
-    if (this->mat == NULL)
+    if (this->mat == _NULL)
         return;
     free(this->mat);
-    this->mat = NULL;
+    this->mat = _NULL;
 }
 
 Matrix &Matrix::operator=(const Matrix &B) {
@@ -83,11 +89,17 @@ Matrix &Matrix::operator=(const Matrix &B) {
     if (B.simple_copy) {
         this->mat = B.mat;
     } else {
+        this->mat = (double *)realloc(this->mat, B.n * B.m * sizeof(double));
         std::memcpy(this->mat, B.mat, B.n * B.m * sizeof(double));
     }
     return (*this);
 }
 
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
+    for (int i = 0; i < A.n; ++i) {
+        for (int j = 0; j < A.m; ++j)
+            out << A.mat[i * A.m + j] << ' ';
+        out << '\n';
+    }
     return out;
 }

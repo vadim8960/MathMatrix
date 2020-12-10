@@ -3,11 +3,13 @@
 #define MATHMATRIX_MATRIX_H
 
 #include <istream>
-#include <cstdlib>
 #include <cstring>
 
 #if __cplusplus >= 201103L
 #include <initializer_list>
+#define _NULL nullptr
+#else
+#define _NULL NULL
 #endif
 
 class Matrix {
