@@ -96,9 +96,19 @@ Matrix &Matrix::operator=(const Matrix &B) {
 }
 
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
+    unsigned max_value_len = 0;
+    unsigned tmp_len;
+    char tmp_str[20];
+    for (unsigned i = 0; i < A.n * A.m; ++i) {
+        sprintf(tmp_str, "%g", A.mat[i]);
+        tmp_len = std::strlen(tmp_str);
+        if (tmp_len > max_value_len)
+            max_value_len = tmp_len;
+    }
+
     for (int i = 0; i < A.n; ++i) {
         for (int j = 0; j < A.m; ++j)
-            out << A.mat[i * A.m + j] << ' ';
+            out << std::setw(static_cast<int>(max_value_len + 1)) << A.mat[i * A.m + j] << ' ';
         out << '\n';
     }
     return out;
