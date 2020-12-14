@@ -94,6 +94,19 @@ Matrix &Matrix::operator=(const Matrix &B) {
     return (*this);
 }
 
+Matrix Matrix::operator*(double a) const {
+    Matrix tmp(n, m);
+    for (double * i = mat, * dest = tmp.mat; i <= mat + n * m; ++i, ++dest)
+        *dest = *i * a;
+    return tmp;
+}
+
+Matrix &Matrix::operator*=(double a) {
+    for (double * i = mat; i <= mat + n * m; ++i)
+        *i *= a;
+    return *this;
+}
+
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     unsigned max_value_len = 0;
     unsigned tmp_len;
@@ -111,4 +124,8 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
         out << '\n';
     }
     return out;
+}
+
+Matrix operator*(double a, const Matrix &A) {
+    return A * a;
 }
