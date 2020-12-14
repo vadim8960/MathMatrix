@@ -95,6 +95,10 @@ Matrix &Matrix::operator=(const Matrix &B) {
 }
 
 Matrix Matrix::operator*(double a) const {
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return *this;
+    }
     Matrix tmp(n, m);
     for (double * i = mat, * dest = tmp.mat; i <= mat + n * m; ++i, ++dest)
         *dest = *i * a;
@@ -102,6 +106,10 @@ Matrix Matrix::operator*(double a) const {
 }
 
 Matrix &Matrix::operator*=(double a) {
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return *this;
+    }
     for (double * i = mat; i <= mat + n * m; ++i)
         *i *= a;
     return *this;
@@ -127,5 +135,9 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
 }
 
 Matrix operator*(double a, const Matrix &A) {
+    if (A.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    }
     return A * a;
 }
