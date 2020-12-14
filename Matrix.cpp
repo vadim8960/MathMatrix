@@ -97,7 +97,7 @@ Matrix &Matrix::operator=(const Matrix &B) {
 Matrix Matrix::operator*(double a) const {
     if (mat == _NULL) {
         Matrix::err_code = 1;
-        return *this;
+        return Matrix();
     }
     Matrix tmp(n, m);
     for (double * i = mat, * dest = tmp.mat; i <= mat + n * m; ++i, ++dest)
