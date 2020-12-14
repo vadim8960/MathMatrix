@@ -1,7 +1,5 @@
 #include <iostream>
 #include "Matrix.h"
-#include <cstring>
-#include <iomanip>
 
 int main() {
     Matrix m6(3, 4, {1.2, 2.2564, 3.8, 4,
