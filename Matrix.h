@@ -38,6 +38,11 @@ public:
     ~Matrix();
 
     Matrix &operator=(const Matrix & B);
+
+    Matrix operator-(const Matrix &B);
+    Matrix &operator-=(const Matrix &B);
+    Matrix &operator+=(const Matrix &B);
+
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
 };
 
