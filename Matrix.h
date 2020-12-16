@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <cmath>
 #include <string>
+#include <cstdio>
 
 #if __cplusplus >= 201103L
 #include <initializer_list>

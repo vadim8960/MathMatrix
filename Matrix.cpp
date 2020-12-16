@@ -120,7 +120,7 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     unsigned tmp_len;
     char tmp_str[20];
     for (unsigned i = 0; i < A.n * A.m; ++i) {
-        std::sprintf(tmp_str, "%g", (A.mat[i] < Matrix::eps) ? 0. : A.mat[i]);
+        sprintf(tmp_str, "%g", (A.mat[i] < Matrix::eps) ? 0. : A.mat[i]);
         tmp_len = std::strlen(tmp_str);
         if (tmp_len > max_value_len)
             max_value_len = tmp_len;
