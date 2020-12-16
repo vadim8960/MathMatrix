@@ -5,9 +5,8 @@
 #include <istream>
 #include <cstring>
 #include <iomanip>
-#include <cmath>
-#include <string>
 #include <cstdio>
+#include <cmath>
 
 #if __cplusplus >= 201103L
 #include <initializer_list>
