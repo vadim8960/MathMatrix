@@ -46,5 +46,4 @@ public:
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
 };
 
-
 #endif //MATHMATRIX_MATRIX_H
