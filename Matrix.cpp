@@ -47,6 +47,7 @@ Matrix::Matrix(unsigned n, double a) {
 
 #if __cplusplus >= 201103L
 Matrix::Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl) {
+    Matrix::err_code = 0;
     if (n * m != MIl.size()) {
         Matrix::err_code = 14;
         return;
@@ -95,6 +96,7 @@ Matrix &Matrix::operator=(const Matrix &B) {
 }
 
 Matrix Matrix::operator*(double a) const {
+    Matrix::err_code = 0;
     if (mat == _NULL) {
         Matrix::err_code = 1;
         return Matrix();
@@ -106,6 +108,7 @@ Matrix Matrix::operator*(double a) const {
 }
 
 Matrix &Matrix::operator*=(double a) {
+    Matrix::err_code = 0;
     if (mat == _NULL) {
         Matrix::err_code = 1;
         return *this;
@@ -135,6 +138,7 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
 }
 
 Matrix operator*(double a, const Matrix &A) {
+    Matrix::err_code = 0;
     if (A.mat == _NULL) {
         Matrix::err_code = 2;
         return Matrix();
