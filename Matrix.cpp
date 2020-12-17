@@ -100,7 +100,7 @@ Matrix Matrix::operator*(double a) const {
         return Matrix();
     }
     Matrix tmp(n, m);
-    for (double * i = mat, * dest = tmp.mat; i <= mat + n * m; ++i, ++dest)
+    for (double * i = mat, * dest = tmp.mat; i < mat + n * m; ++i, ++dest)
         *dest = *i * a;
     return tmp;
 }
@@ -110,7 +110,7 @@ Matrix &Matrix::operator*=(double a) {
         Matrix::err_code = 1;
         return *this;
     }
-    for (double * i = mat; i <= mat + n * m; ++i)
+    for (double * i = mat; i < mat + n * m; ++i)
         *i *= a;
     return *this;
 }
