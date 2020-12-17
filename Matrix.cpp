@@ -47,6 +47,7 @@ Matrix::Matrix(unsigned n, double a) {
 
 #if __cplusplus >= 201103L
 Matrix::Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl) {
+    Matrix::err_code = 0;
     if (n * m != MIl.size()) {
         Matrix::err_code = 14;
         return;
