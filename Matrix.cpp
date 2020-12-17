@@ -95,6 +95,7 @@ Matrix &Matrix::operator=(const Matrix &B) {
 }
 
 Matrix Matrix::operator-(const Matrix &B) {
+    Matrix::err_code = 0;
     if (mat == _NULL) {
         Matrix::err_code = 1;
         return Matrix();
@@ -112,6 +113,7 @@ Matrix Matrix::operator-(const Matrix &B) {
 }
 
 Matrix &Matrix::operator-=(const Matrix &B) {
+    Matrix::err_code = 0;
     if (mat == _NULL) {
         Matrix::err_code = 1;
         return *this;
@@ -128,6 +130,7 @@ Matrix &Matrix::operator-=(const Matrix &B) {
 }
 
 Matrix &Matrix::operator+=(const Matrix &B) {
+    Matrix::err_code = 0;
     if (mat == _NULL) {
         Matrix::err_code = 1;
         return *this;
