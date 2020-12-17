@@ -107,7 +107,8 @@ Matrix Matrix::operator-(const Matrix &B) {
         return Matrix();
     }
     Matrix tmp(n, m);
-    for (double * i = mat, *j = B.mat, *tmp_prt = tmp.mat; i < mat + n * m; i++, j++, tmp_prt++)
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat, *tmp_prt = tmp.mat; i < pfin; i++, j++, tmp_prt++)
         *tmp_prt = *i - *j;
     return tmp;
 }
@@ -124,7 +125,8 @@ Matrix &Matrix::operator-=(const Matrix &B) {
         Matrix::err_code = 12;
         return *this;
     }
-    for (double * i = mat, *j = B.mat; i < mat + n * m; i++, j++)
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat; i < pfin; i++, j++)
         *i -= *j;
     return *this;
 }
@@ -141,7 +143,8 @@ Matrix &Matrix::operator+=(const Matrix &B) {
         Matrix::err_code = 12;
         return *this;
     }
-    for (double * i = mat, *j = B.mat; i < mat + n * m; i++, j++)
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat; i < pfin; i++, j++)
         *i += *j;
     return *this;
 }
