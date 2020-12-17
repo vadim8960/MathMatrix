@@ -37,6 +37,9 @@ public:
     Matrix(const Matrix & A);
     ~Matrix();
 
+    unsigned ColNumb() const;
+    void GetRow(unsigned number, double * dest) const;
+
     Matrix &operator=(const Matrix & B);
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
 };

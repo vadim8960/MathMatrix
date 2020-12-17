@@ -111,3 +111,19 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     }
     return out;
 }
+
+unsigned Matrix::ColNumb() const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    return m;
+}
+
+void Matrix::GetRow(unsigned int number, double *dest) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    else if (number > n)
+        Matrix::err_code = 22;
+    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
+}
