@@ -3,6 +3,7 @@
 #define MATHMATRIX_MATRIX_H
 
 #include <istream>
+#include <fstream>
 #include <cstring>
 #include <iomanip>
 #include <cstdio>
@@ -31,11 +32,15 @@ public:
     Matrix(double * mat, unsigned n);
     Matrix(double * mat, unsigned n, unsigned m);
     Matrix(unsigned n, double a);
+    Matrix(std::ifstream& file);
+    Matrix(FILE* file);
 #if __cplusplus >= 201103L
     Matrix(unsigned n, unsigned m, const std::initializer_list<double> & MIl);
 #endif
     Matrix(const Matrix & A);
     ~Matrix();
+
+    Matrix transpose();
 
     Matrix &operator=(const Matrix & B);
 
