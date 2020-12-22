@@ -201,7 +201,7 @@ Matrix Matrix::operator-(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return Matrix();
-    } else if (n != B.n or m != B.m) {
+    } else if (n != B.n || m != B.m) {
         Matrix::err_code = 12;
         return Matrix();
     }
@@ -220,7 +220,7 @@ Matrix &Matrix::operator-=(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return *this;
-    } else if (n != B.n or m != B.m) {
+    } else if (n != B.n || m != B.m) {
         Matrix::err_code = 12;
         return *this;
     }
@@ -238,8 +238,8 @@ Matrix &Matrix::operator+=(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return *this;
-    } else if (n != B.n or m != B.m) {
-        Matrix::err_code = 12;
+    } else if (n != B.n || m != B.m) {
+        Matrix::err_code = 11;
         return *this;
     }
     double *pfin = mat + n * m;
@@ -270,6 +270,54 @@ Matrix &Matrix::operator*=(double a) {
     double *end_ptr = mat + n * m;
     for (double *i = mat; i < end_ptr; ++i)
         *i *= a;
+    return *this;
+}
+
+Matrix Matrix::operator+(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    } else if (n != B.n || m != B.m) {
+        Matrix::err_code = 11;
+        return Matrix();
+    }
+    Matrix tmp(n, m);
+    double *pfin = mat + n * m;
+    for (double *i = mat, *j = B.mat, *tmp_prt = tmp.mat; i < pfin; i++, j++, tmp_prt++)
+        *tmp_prt = *i + *j;
+    return tmp;
+}
+
+Matrix Matrix::operator*(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    } else if (m != B.n) {
+        Matrix::err_code = 13;
+        return Matrix();
+    }
+    Matrix retv(n, B.m);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < B.m; ++j) {
+            *(retv.mat + i * m + j) = 0;
+            for (int k = 0; k < m; ++k)
+                *(retv.mat + i * m + j) += (*(mat + i * m + k) * *(B.mat + k * B.m + j));
+        }
+    }
+    return retv;
+}
+
+Matrix &Matrix::operator*=(const Matrix &B) {
+    Matrix retv = *this * B;
+    *this = retv;
     return *this;
 }
 
