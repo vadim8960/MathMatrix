@@ -41,6 +41,9 @@ public:
     ~Matrix();
 
     Matrix transpose();
+    void multiplyRowByConst(unsigned row, double c);
+    void rowSwap(unsigned row1, unsigned row2);
+    void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
 
     Matrix &operator=(const Matrix & B);
 
