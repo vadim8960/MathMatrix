@@ -50,6 +50,9 @@ public:
     Matrix operator*(double a) const;
     Matrix &operator*=(double a);
 
+    bool operator==(const Matrix &B);
+    bool operator!=(const Matrix &B);
+
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
     friend Matrix operator*(double a, const Matrix & A);
 };
