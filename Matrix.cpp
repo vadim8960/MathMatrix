@@ -97,6 +97,61 @@ Matrix &Matrix::operator=(const Matrix &B) {
     return (*this);
 }
 
+Matrix Matrix::operator-(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    } else if (n != B.n or m != B.m) {
+        Matrix::err_code = 12;
+        return Matrix();
+    }
+    Matrix tmp(n, m);
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat, *tmp_prt = tmp.mat; i < pfin; i++, j++, tmp_prt++)
+        *tmp_prt = *i - *j;
+    return tmp;
+}
+
+Matrix &Matrix::operator-=(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return *this;
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return *this;
+    } else if (n != B.n or m != B.m) {
+        Matrix::err_code = 12;
+        return *this;
+    }
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat; i < pfin; i++, j++)
+        *i -= *j;
+    return *this;
+}
+
+Matrix &Matrix::operator+=(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return *this;
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return *this;
+    } else if (n != B.n or m != B.m) {
+        Matrix::err_code = 12;
+        return *this;
+    }
+    double *pfin = mat + n * m;
+    for (double * i = mat, *j = B.mat; i < pfin; i++, j++)
+        *i += *j;
+    return *this;
+}
+
 Matrix Matrix::operator*(double a) const {
     Matrix::err_code = 0;
     if (mat == _NULL) {

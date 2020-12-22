@@ -38,12 +38,15 @@ public:
     ~Matrix();
 
     Matrix &operator=(const Matrix & B);
+
+    Matrix operator-(const Matrix &B);
+    Matrix &operator-=(const Matrix &B);
+    Matrix &operator+=(const Matrix &B);
     Matrix operator*(double a) const;
     Matrix &operator*=(double a);
 
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
     friend Matrix operator*(double a, const Matrix & A);
 };
-
 
 #endif //MATHMATRIX_MATRIX_H
