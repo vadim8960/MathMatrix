@@ -5,9 +5,8 @@
 #include <istream>
 #include <cstring>
 #include <iomanip>
-#include <cmath>
-#include <string>
 #include <cstdio>
+#include <cmath>
 
 #if __cplusplus >= 201103L
 #include <initializer_list>
@@ -43,8 +42,11 @@ public:
     Matrix operator-(const Matrix &B);
     Matrix &operator-=(const Matrix &B);
     Matrix &operator+=(const Matrix &B);
+    Matrix operator*(double a) const;
+    Matrix &operator*=(double a);
 
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
+    friend Matrix operator*(double a, const Matrix & A);
 };
 
 #endif //MATHMATRIX_MATRIX_H
