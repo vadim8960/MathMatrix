@@ -97,6 +97,31 @@ Matrix &Matrix::operator=(const Matrix &B) {
     return (*this);
 }
 
+Matrix Matrix::operator*(double a) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    }
+    Matrix tmp(n, m);
+    double *end_ptr = mat + n * m;
+    for (double * i = mat, * dest = tmp.mat; i < end_ptr; ++i, ++dest)
+        *dest = *i * a;
+    return tmp;
+}
+
+Matrix &Matrix::operator*=(double a) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return *this;
+    }
+    double *end_ptr = mat + n * m;
+    for (double * i = mat; i < end_ptr; ++i)
+        *i *= a;
+    return *this;
+}
+
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     char tmp_str[20];
     out << A.n << " x " << A.m << '\n';
@@ -110,4 +135,13 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
         out << '\n';
     }
     return out;
+}
+
+Matrix operator*(double a, const Matrix &A) {
+    Matrix::err_code = 0;
+    if (A.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    }
+    return A * a;
 }
