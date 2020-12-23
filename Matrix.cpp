@@ -273,6 +273,20 @@ Matrix &Matrix::operator*=(double a) {
     return *this;
 }
 
+bool Matrix::operator==(const Matrix &B) {
+    if (n != B.n || m != B.m)
+        return false;
+    double *pfin = mat + n * m;
+    for (double *a1 = mat, *a2 = B.mat; a1 < pfin; ++a1, ++a2)
+        if (*a1 != *a2)
+            return false;
+    return true;
+}
+
+bool Matrix::operator!=(const Matrix &B) {
+    return !(*this == B);
+}
+
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     char tmp_str[20];
     out << A.n << " x " << A.m << '\n';
