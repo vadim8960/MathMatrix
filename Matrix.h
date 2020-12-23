@@ -42,6 +42,9 @@ public:
 
     Matrix transpose();
 
+    unsigned ColNumb() const;
+    void GetRow(unsigned number, double * dest) const;
+
     Matrix &operator=(const Matrix & B);
 
     Matrix operator-(const Matrix &B);
