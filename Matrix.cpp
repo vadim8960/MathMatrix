@@ -176,7 +176,51 @@ Matrix Matrix::transpose() {
         Matrix::err_code = 1;
         return Matrix();
     }
+}
 
+void Matrix::multiplyRowByConst(unsigned int row, double c) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return;
+    } else if (row > n) {
+        Matrix::err_code = 22;
+        return;
+    }
+    double *pfin = mat + row * m;
+    for (double *i = mat + (row - 1) * m; i < pfin; ++i)
+        *i *= c;
+}
+
+void Matrix::rowSwap(unsigned int row1, unsigned int row2) {
+    Matrix::err_code = 0;
+    if (row1 > n || row2 > n) {
+        Matrix::err_code = 22;
+        return;
+    }
+    double *pfin = mat + row1 * m;
+    double tmp;
+    for (double *i1 = mat + (row1 - 1) * m, *i2 = mat + (row2 - 1) * m; i1 < pfin; ++i1, ++i2) {
+        if (*i1 != *i2) {
+            tmp = *i1;
+            *i1 = *i2;
+            *i2 = tmp;
+        }
+    }
+}
+
+void Matrix::sumRowByConstAndRow(unsigned int row1, unsigned int row2, double k) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return;
+    } else if (row1 > n || row2 > n) {
+        Matrix::err_code = 22;
+        return;
+    }
+    double *pfin = mat + row1 * m;
+    for (double *i1 = mat + (row1 - 1) * m, *i2 = mat + (row2 - 1) * m; i1 < pfin; ++i1, ++i2)
+        *i1 += (*i2 * k);
 }
 
 Matrix &Matrix::operator=(const Matrix &B) {
