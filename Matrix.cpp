@@ -14,34 +14,34 @@ Matrix::Matrix() {
 Matrix::Matrix(unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) malloc(n * n * sizeof(double));
+    this->mat = (double *)malloc(n * n * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *) malloc(n * m * sizeof(double));
+    this->mat = (double *)malloc(n * m * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) malloc(n * n * sizeof(double));
+    this->mat = (double *)malloc(n * n * sizeof(double));
     std::memcpy(this->mat, mat, n * n * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *) malloc(this->n * this->m * sizeof(double));
+    this->mat = (double *)malloc(this->n * this->m * sizeof(double));
     std::memcpy(this->mat, mat, n * m * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, double a) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) calloc(n * n, sizeof(double));
-    for (double *i = this->mat; i <= this->mat + n * n; i += (n + 1))
+    this->mat = (double *)calloc(n * n, sizeof(double));
+    for (double * i = this->mat; i <= this->mat + n * n; i += (n + 1))
         *i = a;
 }
 
@@ -141,7 +141,7 @@ Matrix::Matrix(const Matrix &A) {
     if (A.simple_copy) {
         this->mat = A.mat;
     } else {
-        this->mat = (double *) malloc(A.n * A.m * sizeof(double));
+        this->mat = (double *)malloc(A.n * A.m * sizeof(double));
         std::memcpy(this->mat, A.mat, A.n * A.m * sizeof(double));
     }
 }
@@ -319,6 +319,19 @@ Matrix &Matrix::operator*=(const Matrix &B) {
     Matrix retv = *this * B;
     *this = retv;
     return *this;
+
+bool Matrix::operator==(const Matrix &B) {
+    if (n != B.n || m != B.m)
+        return false;
+    double *pfin = mat + n * m;
+    for (double *a1 = mat, *a2 = B.mat; a1 < pfin; ++a1, ++a2)
+        if (*a1 != *a2)
+            return false;
+    return true;
+}
+
+bool Matrix::operator!=(const Matrix &B) {
+    return !(*this == B);
 }
 
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
@@ -343,4 +356,20 @@ Matrix operator*(double a, const Matrix &A) {
         return Matrix();
     }
     return A * a;
+}
+
+unsigned Matrix::ColNumb() const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    return m;
+}
+
+void Matrix::GetRow(unsigned int number, double *dest) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    else if (number > n)
+        Matrix::err_code = 22;
+    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
 }
