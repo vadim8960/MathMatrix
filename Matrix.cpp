@@ -14,34 +14,34 @@ Matrix::Matrix() {
 Matrix::Matrix(unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) malloc(n * n * sizeof(double));
+    this->mat = (double *)malloc(n * n * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *) malloc(n * m * sizeof(double));
+    this->mat = (double *)malloc(n * m * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) malloc(n * n * sizeof(double));
+    this->mat = (double *)malloc(n * n * sizeof(double));
     std::memcpy(this->mat, mat, n * n * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *) malloc(this->n * this->m * sizeof(double));
+    this->mat = (double *)malloc(this->n * this->m * sizeof(double));
     std::memcpy(this->mat, mat, n * m * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, double a) {
     this->n = n;
     this->m = n;
-    this->mat = (double *) calloc(n * n, sizeof(double));
-    for (double *i = this->mat; i <= this->mat + n * n; i += (n + 1))
+    this->mat = (double *)calloc(n * n, sizeof(double));
+    for (double * i = this->mat; i <= this->mat + n * n; i += (n + 1))
         *i = a;
 }
 
@@ -141,7 +141,7 @@ Matrix::Matrix(const Matrix &A) {
     if (A.simple_copy) {
         this->mat = A.mat;
     } else {
-        this->mat = (double *) malloc(A.n * A.m * sizeof(double));
+        this->mat = (double *)malloc(A.n * A.m * sizeof(double));
         std::memcpy(this->mat, A.mat, A.n * A.m * sizeof(double));
     }
 }
@@ -245,7 +245,7 @@ Matrix Matrix::operator-(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return Matrix();
-    } else if (n != B.n or m != B.m) {
+    } else if (n != B.n || m != B.m) {
         Matrix::err_code = 12;
         return Matrix();
     }
@@ -264,7 +264,7 @@ Matrix &Matrix::operator-=(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return *this;
-    } else if (n != B.n or m != B.m) {
+    } else if (n != B.n || m != B.m) {
         Matrix::err_code = 12;
         return *this;
     }
@@ -282,8 +282,8 @@ Matrix &Matrix::operator+=(const Matrix &B) {
     } else if (B.mat == _NULL) {
         Matrix::err_code = 2;
         return *this;
-    } else if (n != B.n or m != B.m) {
-        Matrix::err_code = 12;
+    } else if (n != B.n || m != B.m) {
+        Matrix::err_code = 11;
         return *this;
     }
     double *pfin = mat + n * m;
@@ -317,6 +317,67 @@ Matrix &Matrix::operator*=(double a) {
     return *this;
 }
 
+Matrix Matrix::operator+(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    } else if (n != B.n || m != B.m) {
+        Matrix::err_code = 11;
+        return Matrix();
+    }
+    Matrix tmp(n, m);
+    double *pfin = mat + n * m;
+    for (double *i = mat, *j = B.mat, *tmp_prt = tmp.mat; i < pfin; i++, j++, tmp_prt++)
+        *tmp_prt = *i + *j;
+    return tmp;
+}
+
+Matrix Matrix::operator*(const Matrix &B) {
+    Matrix::err_code = 0;
+    if (mat == _NULL) {
+        Matrix::err_code = 1;
+        return Matrix();
+    } else if (B.mat == _NULL) {
+        Matrix::err_code = 2;
+        return Matrix();
+    } else if (m != B.n) {
+        Matrix::err_code = 13;
+        return Matrix();
+    }
+    Matrix retv(n, B.m);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < B.m; ++j) {
+            *(retv.mat + i * m + j) = 0;
+            for (int k = 0; k < m; ++k)
+                *(retv.mat + i * m + j) += (*(mat + i * m + k) * *(B.mat + k * B.m + j));
+        }
+    }
+    return retv;
+}
+
+Matrix &Matrix::operator*=(const Matrix &B) {
+    Matrix retv = *this * B;
+    *this = retv;
+    return *this;
+
+bool Matrix::operator==(const Matrix &B) {
+    if (n != B.n || m != B.m)
+        return false;
+    double *pfin = mat + n * m;
+    for (double *a1 = mat, *a2 = B.mat; a1 < pfin; ++a1, ++a2)
+        if (*a1 != *a2)
+            return false;
+    return true;
+}
+
+bool Matrix::operator!=(const Matrix &B) {
+    return !(*this == B);
+}
+
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     char tmp_str[20];
     out << A.n << " x " << A.m << '\n';
@@ -339,4 +400,20 @@ Matrix operator*(double a, const Matrix &A) {
         return Matrix();
     }
     return A * a;
+}
+
+unsigned Matrix::ColNumb() const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    return m;
+}
+
+void Matrix::GetRow(unsigned int number, double *dest) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    else if (number > n)
+        Matrix::err_code = 22;
+    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
 }

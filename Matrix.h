@@ -45,6 +45,9 @@ public:
     void rowSwap(unsigned row1, unsigned row2);
     void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
 
+    unsigned ColNumb() const;
+    void GetRow(unsigned number, double * dest) const;
+
     Matrix &operator=(const Matrix & B);
 
     Matrix operator-(const Matrix &B);
@@ -52,6 +55,12 @@ public:
     Matrix &operator+=(const Matrix &B);
     Matrix operator*(double a) const;
     Matrix &operator*=(double a);
+    Matrix operator+(const Matrix& M);
+    Matrix operator*(const Matrix& M);
+    Matrix& operator*=(const Matrix& M);
+
+    bool operator==(const Matrix &B);
+    bool operator!=(const Matrix &B);
 
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
     friend Matrix operator*(double a, const Matrix & A);
