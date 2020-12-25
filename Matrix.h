@@ -52,6 +52,9 @@ public:
     Matrix &operator+=(const Matrix &B);
     Matrix operator*(double a) const;
     Matrix &operator*=(double a);
+    Matrix operator+(const Matrix& M);
+    Matrix operator*(const Matrix& M);
+    Matrix& operator*=(const Matrix& M);
 
     bool operator==(const Matrix &B);
     bool operator!=(const Matrix &B);
