@@ -363,6 +363,7 @@ Matrix &Matrix::operator*=(const Matrix &B) {
     Matrix retv = *this * B;
     *this = retv;
     return *this;
+}
 
 bool Matrix::operator==(const Matrix &B) {
     if (n != B.n || m != B.m)
@@ -376,6 +377,22 @@ bool Matrix::operator==(const Matrix &B) {
 
 bool Matrix::operator!=(const Matrix &B) {
     return !(*this == B);
+}
+
+unsigned Matrix::ColNumb() const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    return m;
+}
+
+void Matrix::GetRow(unsigned int number, double *dest) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    else if (number > n)
+        Matrix::err_code = 22;
+    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
 }
 
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
@@ -402,18 +419,53 @@ Matrix operator*(double a, const Matrix &A) {
     return A * a;
 }
 
-unsigned Matrix::ColNumb() const {
+void Matrix::SwapCols(unsigned c1, unsigned c2){
     Matrix::err_code = 0;
-    if (mat == _NULL)
+    if(mat == _NULL){
         Matrix::err_code = 1;
-    return m;
+        return;
+    }else if(c1 > m || c2 > m){
+        Matrix::err_code = 23;
+        return;
+    }
+    c1 --;
+    c2 --;
+    double r;
+    for(unsigned i = 0; i < n; i ++){
+        r = mat[i*m + c1];
+        mat[i*m + c1]= mat[i*m + c2];
+        mat[i*m + c2] = r;
+    }
 }
 
-void Matrix::GetRow(unsigned int number, double *dest) const {
+double * Matrix::operator[](unsigned i){
+    if(i-1 >= n){
+        return _NULL;
+    }else{
+        return &mat[(i-1)*m - 1];
+    }
+}
+
+Matrix Matrix::SubMatrix(unsigned x, unsigned y, unsigned rows, unsigned cols){
     Matrix::err_code = 0;
-    if (mat == _NULL)
+    if(mat == _NULL){
         Matrix::err_code = 1;
-    else if (number > n)
+        return Matrix();
+    }else if(x > n || y > m){
+        Matrix::err_code = 24;
+        return Matrix();
+    }else if(x-1+rows > this->n){
         Matrix::err_code = 22;
-    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
+        return Matrix();
+    }else if(y-1+cols > this->m){
+        Matrix::err_code = 23;
+        return Matrix();
+    }
+    Matrix B(rows,cols);
+    for(int i = 0; i < rows; i ++){
+        for(int j = 0; j < cols; j ++){
+            B.mat[i*cols+j] = this->mat[(x-1+i)*m + y+j-1];
+        }
+    }
+    return B;
 }

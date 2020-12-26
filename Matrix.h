@@ -44,9 +44,11 @@ public:
     void multiplyRowByConst(unsigned row, double c);
     void rowSwap(unsigned row1, unsigned row2);
     void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
+    void SwapCols(unsigned c1, unsigned c2);
 
     unsigned ColNumb() const;
     void GetRow(unsigned number, double * dest) const;
+    Matrix SubMatrix(unsigned x, unsigned y, unsigned rows, unsigned cols);
 
     Matrix &operator=(const Matrix & B);
 
@@ -58,6 +60,8 @@ public:
     Matrix operator+(const Matrix& M);
     Matrix operator*(const Matrix& M);
     Matrix& operator*=(const Matrix& M);
+
+    double * operator[](unsigned i);
 
     bool operator==(const Matrix &B);
     bool operator!=(const Matrix &B);
