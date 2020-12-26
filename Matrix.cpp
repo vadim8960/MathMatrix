@@ -14,34 +14,34 @@ Matrix::Matrix() {
 Matrix::Matrix(unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)malloc(n * n * sizeof(double));
+    this->mat = (double *) malloc(n * n * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(n * m * sizeof(double));
+    this->mat = (double *) malloc(n * m * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)malloc(n * n * sizeof(double));
+    this->mat = (double *) malloc(n * n * sizeof(double));
     std::memcpy(this->mat, mat, n * n * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(this->n * this->m * sizeof(double));
+    this->mat = (double *) malloc(this->n * this->m * sizeof(double));
     std::memcpy(this->mat, mat, n * m * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, double a) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)calloc(n * n, sizeof(double));
-    for (double * i = this->mat; i <= this->mat + n * n; i += (n + 1))
+    this->mat = (double *) calloc(n * n, sizeof(double));
+    for (double *i = this->mat; i <= this->mat + n * n; i += (n + 1))
         *i = a;
 }
 
@@ -141,7 +141,7 @@ Matrix::Matrix(const Matrix &A) {
     if (A.simple_copy) {
         this->mat = A.mat;
     } else {
-        this->mat = (double *)malloc(A.n * A.m * sizeof(double));
+        this->mat = (double *) malloc(A.n * A.m * sizeof(double));
         std::memcpy(this->mat, A.mat, A.n * A.m * sizeof(double));
     }
 }
@@ -419,52 +419,52 @@ Matrix operator*(double a, const Matrix &A) {
     return A * a;
 }
 
-void Matrix::SwapCols(unsigned c1, unsigned c2){
+void Matrix::SwapCols(unsigned c1, unsigned c2) {
     Matrix::err_code = 0;
-    if(mat == _NULL){
+    if (mat == _NULL) {
         Matrix::err_code = 1;
         return;
-    }else if(c1 > m || c2 > m){
+    } else if (c1 > m || c2 > m) {
         Matrix::err_code = 23;
         return;
     }
-    c1 --;
-    c2 --;
+    c1--;
+    c2--;
     double r;
-    for(unsigned i = 0; i < n; i ++){
-        r = mat[i*m + c1];
-        mat[i*m + c1]= mat[i*m + c2];
-        mat[i*m + c2] = r;
+    for (unsigned i = 0; i < n; i++) {
+        r = mat[i * m + c1];
+        mat[i * m + c1] = mat[i * m + c2];
+        mat[i * m + c2] = r;
     }
 }
 
-double * Matrix::operator[](unsigned i){
-    if(i-1 >= n){
+double *Matrix::operator[](unsigned i) {
+    if (i - 1 >= n) {
         return _NULL;
-    }else{
-        return &mat[(i-1)*m - 1];
+    } else {
+        return &mat[(i - 1) * m - 1];
     }
 }
 
-Matrix Matrix::SubMatrix(unsigned x, unsigned y, unsigned rows, unsigned cols){
+Matrix Matrix::SubMatrix(unsigned x, unsigned y, unsigned rows, unsigned cols) {
     Matrix::err_code = 0;
-    if(mat == _NULL){
+    if (mat == _NULL) {
         Matrix::err_code = 1;
         return Matrix();
-    }else if(x > n || y > m){
+    } else if (x > n || y > m) {
         Matrix::err_code = 24;
         return Matrix();
-    }else if(x-1+rows > this->n){
+    } else if (x - 1 + rows > this->n) {
         Matrix::err_code = 22;
         return Matrix();
-    }else if(y-1+cols > this->m){
+    } else if (y - 1 + cols > this->m) {
         Matrix::err_code = 23;
         return Matrix();
     }
-    Matrix B(rows,cols);
-    for(int i = 0; i < rows; i ++){
-        for(int j = 0; j < cols; j ++){
-            B.mat[i*cols+j] = this->mat[(x-1+i)*m + y+j-1];
+    Matrix B(rows, cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            B.mat[i * cols + j] = this->mat[(x - 1 + i) * m + y + j - 1];
         }
     }
     return B;
