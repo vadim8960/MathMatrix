@@ -14,46 +14,46 @@ Matrix::Matrix() {
 Matrix::Matrix(unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)malloc(n * n * sizeof(double));
+    this->mat = (double *) malloc(n * n * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(n * m * sizeof(double));
+    this->mat = (double *) malloc(n * m * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)malloc(n * n * sizeof(double));
+    this->mat = (double *) malloc(n * n * sizeof(double));
     std::memcpy(this->mat, mat, n * n * sizeof(double));
 }
 
 Matrix::Matrix(double *mat, unsigned n, unsigned m) {
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(this->n * this->m * sizeof(double));
+    this->mat = (double *) malloc(this->n * this->m * sizeof(double));
     std::memcpy(this->mat, mat, n * m * sizeof(double));
 }
 
 Matrix::Matrix(unsigned n, double a) {
     this->n = n;
     this->m = n;
-    this->mat = (double *)calloc(n * n, sizeof(double));
-    for (double * i = this->mat; i <= this->mat + n * n; i += (n + 1))
+    this->mat = (double *) calloc(n * n, sizeof(double));
+    for (double *i = this->mat; i <= this->mat + n * n; i += (n + 1))
         *i = a;
 }
 
 Matrix::Matrix(std::ifstream &file) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     double a;
     double *x = _NULL;
     unsigned n1, n2;
     if (file.is_open()) {
         file >> n1 >> n2;
         if (file.eof() && (n1 * n2 != 0)) {
-            Matrix::err_code = 32;
+            Matrix::err_code = ERR_NOT_VALID_FILE_DATA;
             n1 = 0;
             n2 = 0;
             x = _NULL;
@@ -63,7 +63,7 @@ Matrix::Matrix(std::ifstream &file) {
             file >> a;
             x[j] = a;
             if (file.eof() && (j + 1 != n1 * n2)) {
-                Matrix::err_code = 32;
+                Matrix::err_code = ERR_NOT_VALID_FILE_DATA;
                 n1 = 0;
                 n2 = 0;
                 x = _NULL;
@@ -76,7 +76,7 @@ Matrix::Matrix(std::ifstream &file) {
         this->mat = (double *) malloc(n1 * n2 * sizeof(double));
         std::memcpy(this->mat, x, n1 * n2 * sizeof(double));
     } else {
-        Matrix::err_code = 31;
+        Matrix::err_code = ERR_FILE_NOT_OPEN;
         this->n = 0;
         this->m = 0;
         this->mat = _NULL;
@@ -84,11 +84,11 @@ Matrix::Matrix(std::ifstream &file) {
 }
 
 Matrix::Matrix(FILE *file) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     unsigned n1, n2;
     double *a = _NULL;
     if (file == _NULL) {
-        Matrix::err_code = 31;
+        Matrix::err_code = ERR_FILE_NOT_OPEN;
         this->n = 0;
         this->m = 0;
         this->mat = _NULL;
@@ -96,7 +96,7 @@ Matrix::Matrix(FILE *file) {
         fscanf(file, "%d", &n1);
         fscanf(file, "%d", &n2);
         if (feof(file) && (n1 * n2 != 0)) {
-            Matrix::err_code = 32;
+            Matrix::err_code = ERR_NOT_VALID_FILE_DATA;
             n1 = 0;
             n2 = 0;
             a = _NULL;
@@ -105,7 +105,7 @@ Matrix::Matrix(FILE *file) {
         for (unsigned j = 0; j < n1 * n2; j++) {
             fscanf(file, "%lf", &a[j]);
             if (feof(file) && (j + 1 != n1 * n2)) {
-                Matrix::err_code = 32;
+                Matrix::err_code = ERR_NOT_VALID_FILE_DATA;
                 n1 = 0;
                 n2 = 0;
                 a = _NULL;
@@ -120,28 +120,30 @@ Matrix::Matrix(FILE *file) {
 }
 
 #if __cplusplus >= 201103L
+
 Matrix::Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (n * m != MIl.size()) {
-        Matrix::err_code = 14;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_INIT_LIST;
         return;
     }
     this->n = n;
     this->m = m;
-    this->mat = (double *)malloc(n * m * sizeof(double));
+    this->mat = (double *) malloc(n * m * sizeof(double));
     auto it = MIl.begin();
-    for (double * i = this->mat; i <= this->mat + n * m; ++i, ++it)
+    for (double *i = this->mat; i <= this->mat + n * m; ++i, ++it)
         *i = *it;
 }
+
 #endif
 
 Matrix::Matrix(const Matrix &A) {
     this->n = A.n;
     this->m = A.m;
-    if (A.simple_copy) {
+    if (Matrix::simple_copy) {
         this->mat = A.mat;
     } else {
-        this->mat = (double *)malloc(A.n * A.m * sizeof(double));
+        this->mat = (double *) malloc(A.n * A.m * sizeof(double));
         std::memcpy(this->mat, A.mat, A.n * A.m * sizeof(double));
     }
 }
@@ -157,8 +159,8 @@ Matrix::~Matrix() {
     this->mat = _NULL;
 }
 
-Matrix Matrix::transpose() {
-    Matrix::err_code = 0;
+Matrix Matrix::transposeMatrix() {
+    Matrix::err_code = ERR_OK;
     if (this->mat != _NULL) {
         Matrix a(this->m, this->n);
         double *dm = this->mat;
@@ -173,18 +175,18 @@ Matrix Matrix::transpose() {
         }
         return a;
     } else {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return Matrix();
     }
 }
 
 void Matrix::multiplyRowByConst(unsigned int row, double c) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return;
     } else if (row > n) {
-        Matrix::err_code = 22;
+        Matrix::err_code = ERR_NON_EXISTENT_MATRIX_ROW;
         return;
     }
     double *pfin = mat + row * m;
@@ -193,9 +195,9 @@ void Matrix::multiplyRowByConst(unsigned int row, double c) {
 }
 
 void Matrix::rowSwap(unsigned int row1, unsigned int row2) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (row1 > n || row2 > n) {
-        Matrix::err_code = 22;
+        Matrix::err_code = ERR_NON_EXISTENT_MATRIX_ROW;
         return;
     }
     double *pfin = mat + row1 * m;
@@ -210,12 +212,12 @@ void Matrix::rowSwap(unsigned int row1, unsigned int row2) {
 }
 
 void Matrix::sumRowByConstAndRow(unsigned int row1, unsigned int row2, double k) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return;
     } else if (row1 > n || row2 > n) {
-        Matrix::err_code = 22;
+        Matrix::err_code = ERR_NON_EXISTENT_MATRIX_ROW;
         return;
     }
     double *pfin = mat + row1 * m;
@@ -223,11 +225,27 @@ void Matrix::sumRowByConstAndRow(unsigned int row1, unsigned int row2, double k)
         *i1 += (*i2 * k);
 }
 
+unsigned Matrix::countCols() const {
+    Matrix::err_code = ERR_OK;
+    if (mat == _NULL)
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
+    return m;
+}
+
+void Matrix::GetRow(unsigned int number, double *dest) const {
+    Matrix::err_code = ERR_OK;
+    if (mat == _NULL)
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
+    else if (number > n)
+        Matrix::err_code = ERR_NON_EXISTENT_MATRIX_ROW;
+    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
+}
+
 Matrix &Matrix::operator=(const Matrix &B) {
     if (this != &B) {
         this->n = B.n;
         this->m = B.m;
-        if (B.simple_copy) {
+        if (Matrix::simple_copy) {
             this->mat = B.mat;
         } else {
             this->mat = (double *) realloc(this->mat, B.n * B.m * sizeof(double));
@@ -238,15 +256,15 @@ Matrix &Matrix::operator=(const Matrix &B) {
 }
 
 Matrix Matrix::operator-(const Matrix &B) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return Matrix();
     } else if (B.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return Matrix();
     } else if (n != B.n || m != B.m) {
-        Matrix::err_code = 12;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_MINUS;
         return Matrix();
     }
     Matrix tmp(n, m);
@@ -257,15 +275,15 @@ Matrix Matrix::operator-(const Matrix &B) {
 }
 
 Matrix &Matrix::operator-=(const Matrix &B) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return *this;
     } else if (B.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return *this;
     } else if (n != B.n || m != B.m) {
-        Matrix::err_code = 12;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_MINUS;
         return *this;
     }
     double *pfin = mat + n * m;
@@ -275,15 +293,15 @@ Matrix &Matrix::operator-=(const Matrix &B) {
 }
 
 Matrix &Matrix::operator+=(const Matrix &B) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return *this;
     } else if (B.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return *this;
     } else if (n != B.n || m != B.m) {
-        Matrix::err_code = 11;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_PLUS;
         return *this;
     }
     double *pfin = mat + n * m;
@@ -293,9 +311,9 @@ Matrix &Matrix::operator+=(const Matrix &B) {
 }
 
 Matrix Matrix::operator*(double a) const {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return Matrix();
     }
     Matrix tmp(n, m);
@@ -306,9 +324,9 @@ Matrix Matrix::operator*(double a) const {
 }
 
 Matrix &Matrix::operator*=(double a) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return *this;
     }
     double *end_ptr = mat + n * m;
@@ -318,15 +336,15 @@ Matrix &Matrix::operator*=(double a) {
 }
 
 Matrix Matrix::operator+(const Matrix &B) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return Matrix();
     } else if (B.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return Matrix();
     } else if (n != B.n || m != B.m) {
-        Matrix::err_code = 11;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_PLUS;
         return Matrix();
     }
     Matrix tmp(n, m);
@@ -337,15 +355,15 @@ Matrix Matrix::operator+(const Matrix &B) {
 }
 
 Matrix Matrix::operator*(const Matrix &B) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (mat == _NULL) {
-        Matrix::err_code = 1;
+        Matrix::err_code = ERR_MISSING_FIRST_OPERAND;
         return Matrix();
     } else if (B.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return Matrix();
     } else if (m != B.n) {
-        Matrix::err_code = 13;
+        Matrix::err_code = ERR_MISMATCH_SIZES_WHEN_MULT;
         return Matrix();
     }
     Matrix retv(n, B.m);
@@ -395,26 +413,10 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
 }
 
 Matrix operator*(double a, const Matrix &A) {
-    Matrix::err_code = 0;
+    Matrix::err_code = ERR_OK;
     if (A.mat == _NULL) {
-        Matrix::err_code = 2;
+        Matrix::err_code = ERR_MISSING_SECOND_OPERAND;
         return Matrix();
     }
     return A * a;
-}
-
-unsigned Matrix::ColNumb() const {
-    Matrix::err_code = 0;
-    if (mat == _NULL)
-        Matrix::err_code = 1;
-    return m;
-}
-
-void Matrix::GetRow(unsigned int number, double *dest) const {
-    Matrix::err_code = 0;
-    if (mat == _NULL)
-        Matrix::err_code = 1;
-    else if (number > n)
-        Matrix::err_code = 22;
-    memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
 }
