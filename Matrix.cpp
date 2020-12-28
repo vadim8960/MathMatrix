@@ -363,6 +363,7 @@ Matrix &Matrix::operator*=(const Matrix &B) {
     Matrix retv = *this * B;
     *this = retv;
     return *this;
+}
 
 bool Matrix::operator==(const Matrix &B) {
     if (n != B.n || m != B.m)
