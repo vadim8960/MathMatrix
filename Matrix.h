@@ -57,9 +57,7 @@ public:
     explicit Matrix(FILE *file);
 
 #if __cplusplus >= 201103L
-
     Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl);
-
 #endif
 
     Matrix(const Matrix &A);
@@ -75,9 +73,7 @@ public:
     void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
 
 #if __cplusplus >= 201103L
-
     [[nodiscard]] unsigned countCols() const;
-
 #else
     unsigned countCols() const;
 #endif
