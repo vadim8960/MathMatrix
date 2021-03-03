@@ -157,6 +157,28 @@ Matrix::~Matrix() {
     this->mat = _NULL;
 }
 
+Matrix& Matrix::Concatenation(Matrix &a) {
+    auto tmp_mat = new double[(this->m + a.m) * this->n];
+    bool state = true;
+    unsigned counter = 0;
+    for (double * tmp = tmp_mat; tmp < tmp_mat + (this->m + a.m) * this->n;) {
+        if (state) {
+            std::memcpy(tmp, this->mat + counter * this->m, this->m * sizeof(double));
+            tmp += this->m;
+            state = false;
+        } else {
+            std::memcpy(tmp, a.mat + counter * a.m, a.m * sizeof(double));
+            tmp += a.m;
+            ++counter;
+            state = true;
+        }
+    }
+    free(this->mat);
+    this->mat = tmp_mat;
+    this->m += a.m;
+    return (*this);
+}
+
 Matrix Matrix::transpose() {
     Matrix::err_code = 0;
     if (this->mat != _NULL) {

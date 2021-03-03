@@ -48,6 +48,8 @@ public:
     unsigned ColNumb() const;
     void GetRow(unsigned number, double * dest) const;
 
+    Matrix& Concatenation(Matrix &a);
+
     Matrix &operator=(const Matrix & B);
 
     Matrix operator-(const Matrix &B);
