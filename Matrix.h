@@ -45,8 +45,11 @@ public:
     void rowSwap(unsigned row1, unsigned row2);
     void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
 
-    unsigned ColNumb() const;
+    unsigned sizecol() const;
+    unsigned sizerow() const;
+
     void GetRow(unsigned number, double * dest) const;
+    void GetCol(unsigned number, double * dest) const;
 
     Matrix& Concatenation(Matrix &a);
 
@@ -63,6 +66,8 @@ public:
 
     bool operator==(const Matrix &B);
     bool operator!=(const Matrix &B);
+
+    double* operator[](unsigned i);
 
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
     friend Matrix operator*(double a, const Matrix & A);

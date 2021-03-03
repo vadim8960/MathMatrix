@@ -158,7 +158,7 @@ Matrix::~Matrix() {
 }
 
 Matrix& Matrix::Concatenation(Matrix &a) {
-    auto tmp_mat = new double[(this->m + a.m) * this->n];
+    double * tmp_mat = (double *)malloc((this->m + a.m) * this->n * sizeof(double));
     bool state = true;
     unsigned counter = 0;
     for (double * tmp = tmp_mat; tmp < tmp_mat + (this->m + a.m) * this->n;) {
@@ -209,8 +209,8 @@ void Matrix::multiplyRowByConst(unsigned int row, double c) {
         Matrix::err_code = 22;
         return;
     }
-    double *pfin = mat + row * m;
-    for (double *i = mat + (row - 1) * m; i < pfin; ++i)
+    double *pfin = mat + (row + 1) * m;
+    for (double *i = mat + row * m; i < pfin; ++i)
         *i *= c;
 }
 
@@ -220,9 +220,9 @@ void Matrix::rowSwap(unsigned int row1, unsigned int row2) {
         Matrix::err_code = 22;
         return;
     }
-    double *pfin = mat + row1 * m;
+    double *pfin = mat + (row1 + 1) * m;
     double tmp;
-    for (double *i1 = mat + (row1 - 1) * m, *i2 = mat + (row2 - 1) * m; i1 < pfin; ++i1, ++i2) {
+    for (double *i1 = mat + row1 * m, *i2 = mat + row2 * m; i1 < pfin; ++i1, ++i2) {
         if (*i1 != *i2) {
             tmp = *i1;
             *i1 = *i2;
@@ -240,8 +240,8 @@ void Matrix::sumRowByConstAndRow(unsigned int row1, unsigned int row2, double k)
         Matrix::err_code = 22;
         return;
     }
-    double *pfin = mat + row1 * m;
-    for (double *i1 = mat + (row1 - 1) * m, *i2 = mat + (row2 - 1) * m; i1 < pfin; ++i1, ++i2)
+    double *pfin = mat + (row1 + 1) * m;
+    for (double *i1 = mat + row1 * m, *i2 = mat + row2 * m; i1 < pfin; ++i1, ++i2)
         *i1 += (*i2 * k);
 }
 
@@ -401,12 +401,16 @@ bool Matrix::operator!=(const Matrix &B) {
     return !(*this == B);
 }
 
+double* Matrix::operator[](unsigned i) {
+    return &this->mat[i * this->m];
+}
+
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     char tmp_str[20];
     out << A.n << " x " << A.m << '\n';
     for (int i = 0; i < A.n; ++i) {
         for (int j = 0; j < A.m; ++j) {
-            sprintf(tmp_str, "%9.3g ", fabs(A.mat[i * A.m + j]) < A.eps ? 0. : A.mat[i * A.m + j]);
+            sprintf(tmp_str, "%2.12g ", fabs(A.mat[i * A.m + j]) < A.eps ? 0. : A.mat[i * A.m + j]);
             out << tmp_str;
         }
         if (A.m % 8 == 0)
@@ -425,11 +429,18 @@ Matrix operator*(double a, const Matrix &A) {
     return A * a;
 }
 
-unsigned Matrix::ColNumb() const {
+unsigned Matrix::sizecol() const {
     Matrix::err_code = 0;
     if (mat == _NULL)
         Matrix::err_code = 1;
     return m;
+}
+
+unsigned Matrix::sizerow() const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    return n;
 }
 
 void Matrix::GetRow(unsigned int number, double *dest) const {
@@ -439,4 +450,14 @@ void Matrix::GetRow(unsigned int number, double *dest) const {
     else if (number > n)
         Matrix::err_code = 22;
     memcpy(dest, mat + (number - 1) * m, m * sizeof(double));
+}
+
+void Matrix::GetCol(unsigned number, double * dest) const {
+    Matrix::err_code = 0;
+    if (mat == _NULL)
+        Matrix::err_code = 1;
+    else if (number > m)
+        Matrix::err_code = 22;
+    for (unsigned i = 0; i < this->n; ++i)
+        dest[i] = this->mat[i * this->m + number];
 }
