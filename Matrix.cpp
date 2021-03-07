@@ -7,42 +7,42 @@ double Matrix::_eps = 0.;
 bool Matrix::_simple_copy = false;
 
 Matrix::Matrix() {
-    this->_crows = 0;
-    this->_ccols = 0;
-    this->_mat = _NULL;
+    _crows = 0;
+    _ccols = 0;
+    _mat = _NULL;
 }
 
-Matrix::Matrix(unsigned n) {
-    this->_crows = n;
-    this->_ccols = n;
-    this->_mat = (double *) malloc(n * n * sizeof(double));
+Matrix::Matrix(unsigned count_rows) {
+    _crows = count_rows;
+    _ccols = count_rows;
+    _mat = (double *) malloc(count_rows * count_rows * sizeof(double));
 }
 
-Matrix::Matrix(unsigned n, unsigned m) {
-    this->_crows = n;
-    this->_ccols = m;
-    this->_mat = (double *) malloc(n * m * sizeof(double));
+Matrix::Matrix(unsigned count_rows, unsigned count_cols) {
+    _crows = count_rows;
+    _ccols = count_cols;
+    _mat = (double *) malloc(count_rows * count_cols * sizeof(double));
 }
 
-Matrix::Matrix(double *mat, unsigned n) {
-    this->_crows = n;
-    this->_ccols = n;
-    this->_mat = (double *) malloc(n * n * sizeof(double));
-    std::memcpy(this->_mat, mat, n * n * sizeof(double));
+Matrix::Matrix(double *mat, unsigned count_rows) {
+    _crows = count_rows;
+    _ccols = count_rows;
+    _mat = (double *) malloc(count_rows * count_rows * sizeof(double));
+    std::memcpy(_mat, mat, count_rows * count_rows * sizeof(double));
 }
 
-Matrix::Matrix(double *mat, unsigned n, unsigned m) {
-    this->_crows = n;
-    this->_ccols = m;
-    this->_mat = (double *) malloc(this->_crows * this->_ccols * sizeof(double));
-    std::memcpy(this->_mat, mat, n * m * sizeof(double));
+Matrix::Matrix(double *mat, unsigned count_rows, unsigned count_cols) {
+    _crows = count_rows;
+    _ccols = count_cols;
+    _mat = (double *) malloc(_crows * _ccols * sizeof(double));
+    std::memcpy(_mat, mat, count_rows * count_cols * sizeof(double));
 }
 
-Matrix::Matrix(unsigned n, double a) {
-    this->_crows = n;
-    this->_ccols = n;
-    this->_mat = (double *) calloc(n * n, sizeof(double));
-    for (double *i = this->_mat; i <= this->_mat + n * n; i += (n + 1))
+Matrix::Matrix(unsigned count_rows, double a) {
+    _crows = count_rows;
+    _ccols = count_rows;
+    _mat = (double *) calloc(count_rows * count_rows, sizeof(double));
+    for (double *i = _mat; i <= _mat + count_rows * count_rows; i += (count_rows + 1))
         *i = a;
 }
 
@@ -64,10 +64,10 @@ Matrix::Matrix(std::ifstream &file) {
             }
         }
 
-        this->_crows = n1;
-        this->_ccols = n2;
-        this->_mat = (double *) malloc(n1 * n2 * sizeof(double));
-        std::memcpy(this->_mat, x, n1 * n2 * sizeof(double));
+        _crows = n1;
+        _ccols = n2;
+        _mat = (double *) malloc(n1 * n2 * sizeof(double));
+        std::memcpy(_mat, x, n1 * n2 * sizeof(double));
     } else {
         throw std::invalid_argument(errstr(ERR_FILE_NOT_OPEN));
     }
@@ -91,59 +91,59 @@ Matrix::Matrix(FILE *file) {
                 throw std::invalid_argument(errstr(ERR_NOT_VALID_FILE_DATA));
             }
         }
-        this->_crows = n1;
-        this->_ccols = n2;
-        this->_mat = (double *) malloc(n1 * n2 * sizeof(double));
-        std::memcpy(this->_mat, a, n1 * n2 * sizeof(double));
+        _crows = n1;
+        _ccols = n2;
+        _mat = (double *) malloc(n1 * n2 * sizeof(double));
+        std::memcpy(_mat, a, n1 * n2 * sizeof(double));
     }
 }
 
 #if __cplusplus >= 201103L
 
-Matrix::Matrix(unsigned n, unsigned m, const std::initializer_list<double> &MIl) {
-    if (n * m != MIl.size()) {
+Matrix::Matrix(unsigned count_rows, unsigned count_cols, const std::initializer_list<double> &MIl) {
+    if (count_rows * count_cols != MIl.size()) {
         throw std::invalid_argument(errstr(ERR_MISMATCH_SIZES_WHEN_INIT_LIST));
     }
-    this->_crows = n;
-    this->_ccols = m;
-    this->_mat = (double *) malloc(n * m * sizeof(double));
+    _crows = count_rows;
+    _ccols = count_cols;
+    _mat = (double *) malloc(count_rows * count_cols * sizeof(double));
     auto it = MIl.begin();
-    for (double *i = this->_mat; i <= this->_mat + n * m; ++i, ++it)
+    for (double *i = _mat; i <= _mat + count_rows * count_cols; ++i, ++it)
         *i = *it;
 }
 
 #endif
 
 Matrix::Matrix(const Matrix &A) {
-    this->_crows = A._crows;
-    this->_ccols = A._ccols;
+    _crows = A._crows;
+    _ccols = A._ccols;
     if (A._simple_copy) {
-        this->_mat = A._mat;
+        _mat = A._mat;
     } else {
-        this->_mat = (double *) malloc(A._crows * A._ccols * sizeof(double));
-        std::memcpy(this->_mat, A._mat, A._crows * A._ccols * sizeof(double));
+        _mat = (double *) malloc(A._crows * A._ccols * sizeof(double));
+        std::memcpy(_mat, A._mat, A._crows * A._ccols * sizeof(double));
     }
 }
 
 Matrix::~Matrix() {
-    this->_ccols = 0;
-    this->_crows = 0;
+    _ccols = 0;
+    _crows = 0;
     if (_simple_copy)
         return;
-    if (this->_mat == _NULL)
+    if (_mat == _NULL)
         return;
-    free(this->_mat);
-    this->_mat = _NULL;
+    free(_mat);
+    _mat = _NULL;
 }
 
 Matrix Matrix::concatenation(Matrix &a) {
-    double *tmp_mat = (double *) malloc((this->_ccols + a._ccols) * this->_crows * sizeof(double));
+    double *tmp_mat = (double *) malloc((_ccols + a._ccols) * _crows * sizeof(double));
     bool state = true;
     unsigned counter = 0;
-    for (double *tmp = tmp_mat; tmp < tmp_mat + (this->_ccols + a._ccols) * this->_crows;) {
+    for (double *tmp = tmp_mat; tmp < tmp_mat + (_ccols + a._ccols) * _crows;) {
         if (state) {
-            std::memcpy(tmp, this->_mat + counter * this->_ccols, this->_ccols * sizeof(double));
-            tmp += this->_ccols;
+            std::memcpy(tmp, _mat + counter * _ccols, _ccols * sizeof(double));
+            tmp += _ccols;
             state = false;
         } else {
             std::memcpy(tmp, a._mat + counter * a._ccols, a._ccols * sizeof(double));
@@ -152,22 +152,22 @@ Matrix Matrix::concatenation(Matrix &a) {
             state = true;
         }
     }
-    Matrix retv(tmp_mat, this->_crows, this->_ccols + a._ccols);
+    Matrix retv(tmp_mat, _crows, _ccols + a._ccols);
     return retv;
 }
 
 Matrix Matrix::transpose() {
-    if (this->_mat != _NULL) {
-        Matrix a(this->_ccols, this->_crows);
-        double *dm = this->_mat;
+    if (_mat != _NULL) {
+        Matrix a(_ccols, _crows);
+        double *dm = _mat;
         double *da = a._mat;
-        for (unsigned l = 1; l <= this->_ccols; l++) {
-            for (unsigned d = 0; d < this->_crows; d++) {
+        for (unsigned l = 1; l <= _ccols; l++) {
+            for (unsigned d = 0; d < _crows; d++) {
                 *(da) = *(dm);
                 da++;
-                dm += this->_ccols;
+                dm += _ccols;
             }
-            dm = this->_mat + l;
+            dm = _mat + l;
         }
         return a;
     } else {
@@ -228,13 +228,13 @@ void Matrix::sum_row_by_const_to_row(unsigned int dest_row, unsigned int mult_ro
 
 Matrix &Matrix::operator=(const Matrix &B) {
     if (this != &B) {
-        this->_crows = B._crows;
-        this->_ccols = B._ccols;
+        _crows = B._crows;
+        _ccols = B._ccols;
         if (B._simple_copy) {
-            this->_mat = B._mat;
+            _mat = B._mat;
         } else {
-            this->_mat = (double *) realloc(this->_mat, B._crows * B._ccols * sizeof(double));
-            std::memcpy(this->_mat, B._mat, B._crows * B._ccols * sizeof(double));
+            _mat = (double *) realloc(_mat, B._crows * B._ccols * sizeof(double));
+            std::memcpy(_mat, B._mat, B._crows * B._ccols * sizeof(double));
         }
     }
     return (*this);
@@ -359,7 +359,7 @@ bool Matrix::operator!=(const Matrix &B) {
 }
 
 double *Matrix::operator[](unsigned i) {
-    return &this->_mat[i * this->_ccols];
+    return &_mat[i * _ccols];
 }
 
 std::ostream &operator<<(std::ostream &out, const Matrix &A) {
@@ -409,8 +409,8 @@ void Matrix::get_col(unsigned number, double *dest) const {
         throw std::invalid_argument(errstr(ERR_MISSING_FIRST_OPERAND));
     else if (number > _ccols)
         throw std::invalid_argument(errstr(ERR_NON_EXISTENT_MATRIX_ROW));
-    for (unsigned i = 0; i < this->_crows; ++i)
-        dest[i] = this->_mat[i * this->_ccols + number];
+    for (unsigned i = 0; i < _crows; ++i)
+        dest[i] = _mat[i * _ccols + number];
 }
 
 Matrix Matrix::get_submatrix(unsigned x, unsigned y, unsigned rows, unsigned cols) {
@@ -418,15 +418,15 @@ Matrix Matrix::get_submatrix(unsigned x, unsigned y, unsigned rows, unsigned col
         throw std::invalid_argument(errstr(ERR_MISSING_FIRST_OPERAND));
     } else if (x > _crows || y > _ccols) {
         throw std::invalid_argument(errstr(ERR_NON_EXISTENT_SUBMATRIX));
-    } else if (x + rows > this->_crows) {
+    } else if (x + rows > _crows) {
         throw std::invalid_argument(errstr(ERR_NON_EXISTENT_MATRIX_ROW));
-    } else if (y + cols > this->_ccols) {
+    } else if (y + cols > _ccols) {
         throw std::invalid_argument(errstr(ERR_NON_EXISTENT_MATRIX_COL));
     }
     Matrix B(rows, cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            B._mat[i * cols + j] = this->_mat[(x + i) * _ccols + y + j];
+            B._mat[i * cols + j] = _mat[(x + i) * _ccols + y + j];
         }
     }
     return B;
