@@ -2,7 +2,6 @@
 #ifndef MATHMATRIX_MATRIX_H
 #define MATHMATRIX_MATRIX_H
 
-#include <stdexcept>
 #include <istream>
 #include <fstream>
 #include <cstring>
@@ -22,10 +21,9 @@ private:
     double *_mat;
     unsigned _crows;
     unsigned _ccols;
+    static double _eps;
+    static bool _simple_copy;
 public:
-    static double eps;
-    static bool simple_copy;
-    static unsigned err_code;
 
     Matrix();
     explicit Matrix(unsigned n);
@@ -55,22 +53,19 @@ public:
     void get_row(unsigned number, double * dest) const;
     void get_col(unsigned number, double * dest) const;
 
-    Matrix& concatenation(Matrix &a);
+    Matrix concatenation(Matrix &a);
 
-    Matrix &operator=(const Matrix & B);
-
-    Matrix operator-(const Matrix &B);
-    Matrix &operator-=(const Matrix &B);
-    Matrix &operator+=(const Matrix &B);
-    Matrix operator*(double a) const;
-    Matrix &operator*=(double a);
-    Matrix operator+(const Matrix& M);
-    Matrix operator*(const Matrix& M);
+    Matrix& operator=(const Matrix & B);
+    Matrix  operator-(const Matrix &B);
+    Matrix& operator-=(const Matrix &B);
+    Matrix& operator+=(const Matrix &B);
+    Matrix  operator*(double a) const;
+    Matrix& operator*=(double a);
+    Matrix  operator+(const Matrix& M);
+    Matrix  operator*(const Matrix& M);
     Matrix& operator*=(const Matrix& M);
-
-    bool operator==(const Matrix &B);
-    bool operator!=(const Matrix &B);
-
+    bool    operator==(const Matrix &B);
+    bool    operator!=(const Matrix &B);
     double* operator[](unsigned i);
 
     friend std::ostream &operator<<(std::ostream & out, const Matrix & A);
