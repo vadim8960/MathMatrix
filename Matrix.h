@@ -2,6 +2,7 @@
 #ifndef MATHMATRIX_MATRIX_H
 #define MATHMATRIX_MATRIX_H
 
+#include <stdexcept>
 #include <istream>
 #include <fstream>
 #include <cstring>
@@ -18,22 +19,22 @@
 
 class Matrix {
 private:
-    double *mat;
-    unsigned n;
-    unsigned m;
+    double *_mat;
+    unsigned _crows;
+    unsigned _ccols;
 public:
     static double eps;
     static bool simple_copy;
     static unsigned err_code;
 
     Matrix();
-    Matrix(unsigned n);
+    explicit Matrix(unsigned n);
     Matrix(unsigned n, unsigned m);
     Matrix(double * mat, unsigned n);
     Matrix(double * mat, unsigned n, unsigned m);
     Matrix(unsigned n, double a);
-    Matrix(std::ifstream& file);
-    Matrix(FILE* file);
+    explicit Matrix(std::ifstream& file);
+    explicit Matrix(FILE* file);
 #if __cplusplus >= 201103L
     Matrix(unsigned n, unsigned m, const std::initializer_list<double> & MIl);
 #endif
@@ -41,17 +42,20 @@ public:
     ~Matrix();
 
     Matrix transpose();
-    void multiplyRowByConst(unsigned row, double c);
-    void rowSwap(unsigned row1, unsigned row2);
-    void sumRowByConstAndRow(unsigned row1, unsigned row2, double k);
+    void mult_row_by_const(unsigned row, double c);
+    void swap_rows(unsigned row1, unsigned row2);
+    void swap_cols(unsigned col1, unsigned col2);
+    void sum_row_by_const_to_row(unsigned dest_row, unsigned mult_row, double c);
 
-    unsigned sizecol() const;
-    unsigned sizerow() const;
+    unsigned count_col() const;
+    unsigned count_row() const;
 
-    void GetRow(unsigned number, double * dest) const;
-    void GetCol(unsigned number, double * dest) const;
+    Matrix get_submatrix(unsigned x, unsigned y, unsigned rows, unsigned cols);
 
-    Matrix& Concatenation(Matrix &a);
+    void get_row(unsigned number, double * dest) const;
+    void get_col(unsigned number, double * dest) const;
+
+    Matrix& concatenation(Matrix &a);
 
     Matrix &operator=(const Matrix & B);
 
