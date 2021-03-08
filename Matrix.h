@@ -71,7 +71,7 @@ public:
 
     void get_col(unsigned number, double *dest) const;
 
-    Matrix get_submatrix(unsigned x, unsigned y, unsigned rows, unsigned cols);
+    Matrix get_submatrix(unsigned n_row, unsigned n_col, unsigned count_rows, unsigned count_cols);
 
     Matrix concatenation(Matrix &a);
 
@@ -79,17 +79,17 @@ public:
 
     Matrix operator-(const Matrix &B);
 
+    Matrix operator+(const Matrix &M);
+
+    Matrix operator*(const Matrix &M);
+
+    Matrix operator*(double a) const;
+
     Matrix &operator-=(const Matrix &B);
 
     Matrix &operator+=(const Matrix &B);
 
-    Matrix operator*(double a) const;
-
     Matrix &operator*=(double a);
-
-    Matrix operator+(const Matrix &M);
-
-    Matrix operator*(const Matrix &M);
 
     Matrix &operator*=(const Matrix &M);
 
