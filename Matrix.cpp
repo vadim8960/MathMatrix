@@ -42,7 +42,7 @@ Matrix::Matrix(unsigned count_rows, double a) {
     _crows = count_rows;
     _ccols = count_rows;
     _mat = (double *) calloc(count_rows * count_rows, sizeof(double));
-    for (double *i = _mat; i <= _mat + count_rows * count_rows; i += (count_rows + 1))
+    for (double *i = _mat; i < _mat + count_rows * count_rows; i += (count_rows + 1))
         *i = a;
 }
 
@@ -108,7 +108,7 @@ Matrix::Matrix(unsigned count_rows, unsigned count_cols, const std::initializer_
     _ccols = count_cols;
     _mat = (double *) malloc(count_rows * count_cols * sizeof(double));
     auto it = MIl.begin();
-    for (double *i = _mat; i <= _mat + count_rows * count_cols; ++i, ++it)
+    for (double *i = _mat; i < _mat + count_rows * count_cols; ++i, ++it)
         *i = *it;
 }
 
