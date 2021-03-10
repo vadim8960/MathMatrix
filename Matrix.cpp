@@ -3,8 +3,24 @@
 
 #include "errs/err.h"
 
+using namespace Matrix;
+
 double Matrix::_eps = 0.;
 bool Matrix::_simple_copy = false;
+
+static int max_elem_ind(const double *vec, unsigned size) {
+    int max_ind = 0;
+    int i = 0;
+    do {
+        if (fabs(vec[i]) > fabs(vec[max_ind]))
+            max_ind = i;
+        if (fabs(0 - vec[i]) < ZERO_PRECISION) {
+            max_ind = -1;
+            break;
+        }
+    } while (++i < size);
+    return max_ind;
+}
 
 Matrix::Matrix() {
     _crows = 0;
@@ -409,4 +425,29 @@ Matrix operator*(double a, const Matrix &A) {
         throw std::invalid_argument(errstr(ERR_MISSING_SECOND_OPERAND));
     }
     return A * a;
+}
+
+Matrix GaussMethod::MakeIdentityMatrix(const Matrix &a) {
+    Matrix retv(a);
+
+    int max_ind;
+    auto tmp_vec = new double[a.count_row()];
+
+    for (int i = 0; i < a.count_row(); ++i) {
+        retv.get_col(i, tmp_vec);
+        max_ind = max_elem_ind(tmp_vec + i, a.count_row() - i);
+        if (max_ind == -1) {
+            throw std::logic_error("Degenerate matrix");
+        }
+        max_ind += i;
+        if (max_ind != i)
+            retv.swap_rows(max_ind, i);
+        retv.mult_row_by_const(i, 1.0 / retv[i][i]);
+        for (unsigned j = 0; j < retv.count_row(); ++j) {
+            if (j == i) continue;
+            retv.sum_row_by_const_to_row(j, i, -retv[j][i]);
+        }
+    }
+    delete[] tmp_vec;
+    return retv;
 }
