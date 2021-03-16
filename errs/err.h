@@ -21,7 +21,8 @@ enum Err_e {
     ERR_NON_EXISTENT_MATRIX_COL       = 9,
     ERR_NON_EXISTENT_SUBMATRIX        = 10,
     ERR_FILE_NOT_OPEN                 = 11,
-    ERR_NOT_VALID_FILE_DATA           = 12
+    ERR_NOT_VALID_FILE_DATA           = 12,
+    ERR_MISMATCH_SIZES_WHEN_INVERT    = 13
 };
 
 std::string errstr(Err_e err_code) {
@@ -65,6 +66,8 @@ std::string errstr(Err_e err_code) {
         case ERR_NOT_VALID_FILE_DATA:
             return "Matrix: lack of data to read the required matrix from the file";
 
+        case ERR_MISMATCH_SIZES_WHEN_INVERT:
+            return "Matrix: when looking for an inverse matrix, you need a square matrix";
     }
     return "Matrix: undefined error";
 }

@@ -104,4 +104,8 @@ public:
     friend Matrix operator*(double a, const Matrix &A);
 };
 
+Matrix make_identity_matrix(const Matrix &a);
+
+Matrix get_invert_matrix(const Matrix &a);
+
 #endif //MATHMATRIX_MATRIX_H
