@@ -456,7 +456,6 @@ Matrix get_invert_matrix(const Matrix &a) {
     }
     Matrix ident_mat(a.count_col(), 1.);
     auto mat = make_identity_matrix(Matrix(a).concatenation(ident_mat));
-//    return mat;
     return mat.get_submatrix(0, a.count_col(), a.count_row(), a.count_col());
 
 }
