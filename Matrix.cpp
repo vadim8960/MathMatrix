@@ -3,8 +3,6 @@
 
 #include "errs/err.h"
 
-using namespace Matrix;
-
 double Matrix::_eps = 0.;
 bool Matrix::_simple_copy = false;
 
@@ -14,7 +12,7 @@ static int max_elem_ind(const double *vec, unsigned size) {
     do {
         if (fabs(vec[i]) > fabs(vec[max_ind]))
             max_ind = i;
-        if (fabs(0 - vec[i]) < ZERO_PRECISION) {
+        if (fabs(0 - vec[i]) < 0.000000000001) {
             max_ind = -1;
             break;
         }
@@ -262,7 +260,7 @@ Matrix Matrix::get_submatrix(unsigned n_row, unsigned n_col, unsigned count_rows
     Matrix B(count_rows, count_cols);
     for (int i = 0; i < count_rows; i++) {
         for (int j = 0; j < count_cols; j++) {
-            B._mat[i * count_cols + j] = _mat[(n_row + i) * _ccols + n_row + j];
+            B._mat[i * count_cols + j] = _mat[(n_row + i) * _ccols + n_col + j];
         }
     }
     return B;
@@ -412,7 +410,7 @@ std::ostream &operator<<(std::ostream &out, const Matrix &A) {
     out << A._crows << " x " << A._ccols << '\n';
     for (int i = 0; i < A._crows; ++i) {
         for (int j = 0; j < A._ccols; ++j) {
-            sprintf(tmp_str, "%2.12g ", fabs(A._mat[i * A._ccols + j]) < A._eps ? 0. : A._mat[i * A._ccols + j]);
+            sprintf(tmp_str, "%6.3g ", fabs(A._mat[i * A._ccols + j]) < A._eps ? 0. : A._mat[i * A._ccols + j]);
             out << tmp_str;
         }
         out << '\n';
@@ -427,7 +425,7 @@ Matrix operator*(double a, const Matrix &A) {
     return A * a;
 }
 
-Matrix GaussMethod::MakeIdentityMatrix(const Matrix &a) {
+Matrix make_identity_matrix(const Matrix &a) {
     Matrix retv(a);
 
     int max_ind;
@@ -450,4 +448,15 @@ Matrix GaussMethod::MakeIdentityMatrix(const Matrix &a) {
     }
     delete[] tmp_vec;
     return retv;
+}
+
+Matrix get_invert_matrix(const Matrix &a) {
+    if (a.count_row() != a.count_col()) {
+        throw std::invalid_argument(errstr(ERR_MISMATCH_SIZES_WHEN_INVERT));
+    }
+    Matrix ident_mat(a.count_col(), 1.);
+    auto mat = make_identity_matrix(Matrix(a).concatenation(ident_mat));
+//    return mat;
+    return mat.get_submatrix(0, a.count_col(), a.count_row(), a.count_col());
+
 }
